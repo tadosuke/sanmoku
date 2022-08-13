@@ -28,7 +28,7 @@ _ANGLE_START = 0 * math.pi / 180
 _ANGLE_END = 360 * math.pi / 180
 
 
-def draw_line(ctx: CanvasRenderingContext2D, start_pos: tuple[int, int], end_pos: tuple[int, int]):
+def draw_line(ctx: CanvasRenderingContext2D, start_pos: tuple[int, int], end_pos: tuple[int, int]) -> None:
     """線の描画."""
     ctx.beginPath()
     ctx.moveTo(*start_pos)
@@ -37,7 +37,7 @@ def draw_line(ctx: CanvasRenderingContext2D, start_pos: tuple[int, int], end_pos
     ctx.closePath()
 
 
-def draw_stone(ctx: CanvasRenderingContext2D, center: tuple[int, int], radius: int, color: StoneColor):
+def draw_stone(ctx: CanvasRenderingContext2D, center: tuple[int, int], radius: int, color: StoneColor) -> None:
     """石の描画."""
     (x, y) = center
     ctx.beginPath()
@@ -45,6 +45,15 @@ def draw_stone(ctx: CanvasRenderingContext2D, center: tuple[int, int], radius: i
     ctx.arc(x, y, radius, _ANGLE_START, _ANGLE_END)
     ctx.fill()
     ctx.closePath()
+
+
+def draw_text(ctx: CanvasRenderingContext2D, text: str, position: tuple[int, int], font: str, fill_style: str) -> None:
+    """テキストの描画."""
+    (x, y) = position
+    text = text
+    ctx.font = font
+    ctx.fillStyle = fill_style
+    ctx.fillText(text, x, y)
 
 
 class ResultView:
@@ -58,28 +67,25 @@ class ResultView:
         """描画."""
         if self._model.is_waitstart():
             text = 'Press MouseLeft to Start'
-            self._ctx.font = '28px bold sans-serif'
-
-            self._ctx.fillStyle = 'rgb(0, 0, 0)'
-            self._ctx.fillText(text, 37, 182)
-            self._ctx.fillStyle = 'rgb(255, 255, 255)'
-            self._ctx.fillText(text, 35, 180)
+            font = '28px bold sans-serif'
+            draw_text(self._ctx,
+                      text, position=(37, 182), font=font, fill_style='rgb(0, 0, 0)')
+            draw_text(self._ctx,
+                      text, position=(35, 180), font=font, fill_style='rgb(255, 255, 255)')
         elif self._model.is_gameover():
             text = 'GameOver !'
-            self._ctx.font = '60px bold sans-serif'
-
-            self._ctx.fillStyle = 'rgb(0, 0, 0)'
-            self._ctx.fillText(text, 37, 202)
-            self._ctx.fillStyle = 'rgb(255, 0, 0)'
-            self._ctx.fillText(text, 35, 200)
+            font = '60px bold sans-serif'
+            draw_text(self._ctx,
+                      text, position=(37, 202), font=font, fill_style='rgb(0, 0, 0)')
+            draw_text(self._ctx,
+                      text, position=(35, 200), font=font, fill_style='rgb(255, 0, 0)')
         elif self._model.is_success():
             text = 'Success !'
-            self._ctx.font = '60px bold sans-serif'
-
-            self._ctx.fillStyle = 'rgb(0, 0, 0)'
-            self._ctx.fillText(text, 57, 202)
-            self._ctx.fillStyle = 'rgb(0, 255, 255)'
-            self._ctx.fillText(text, 55, 200)
+            font = '60px bold sans-serif'
+            draw_text(self._ctx,
+                      text, position=(57, 202), font=font, fill_style='rgb(0, 0, 0)')
+            draw_text(self._ctx,
+                      text, position=(55, 200), font=font, fill_style='rgb(0, 255, 255)')
 
 
 class NextStoneView:
@@ -93,9 +99,8 @@ class NextStoneView:
         """描画."""
 
         # テキスト
-        self._ctx.fillStyle = "rgb(0, 0, 0)"
-        self._ctx.font = "30px bold sans-serif"
-        self._ctx.fillText('Next', 440, 80)
+        draw_text(self._ctx,
+                  'Next', position=(440, 80), font='30px bold sans-serif', fill_style="rgb(0, 0, 0)")
 
         # 石
         pos = (535, 70)
@@ -112,10 +117,8 @@ class TimerView:
 
     def draw(self) -> None:
         """描画."""
-
-        self._ctx.font = "30px bold sans-serif"
-        self._ctx.fillStyle = "rgb(0, 0, 0)"
-        self._ctx.fillText(f'Time:{self._model.time_sec}', 440, 250)
+        draw_text(self._ctx,
+                  f'Time:{self._model.time_sec}', position=(440, 250), font="30px bold sans-serif", fill_style="rgb(0, 0, 0)")
 
 
 class BanView:
