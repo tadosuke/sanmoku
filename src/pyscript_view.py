@@ -27,6 +27,9 @@ _ANGLE_START = 0 * math.pi / 180
 #: arc終了角度
 _ANGLE_END = 360 * math.pi / 180
 
+#: 石の半径
+_STONE_RADIUS = 15
+
 
 def draw_line(ctx: CanvasRenderingContext2D, start_pos: tuple[int, int], end_pos: tuple[int, int]) -> None:
     """線の描画."""
@@ -37,12 +40,12 @@ def draw_line(ctx: CanvasRenderingContext2D, start_pos: tuple[int, int], end_pos
     ctx.closePath()
 
 
-def draw_stone(ctx: CanvasRenderingContext2D, center: tuple[int, int], radius: int, color: StoneColor) -> None:
+def draw_stone(ctx: CanvasRenderingContext2D, center: tuple[int, int], color: StoneColor) -> None:
     """石の描画."""
     (x, y) = center
     ctx.beginPath()
     ctx.fillStyle = _STONE_COLORS[color]
-    ctx.arc(x, y, radius, _ANGLE_START, _ANGLE_END)
+    ctx.arc(x, y, _STONE_RADIUS, _ANGLE_START, _ANGLE_END)
     ctx.fill()
     ctx.closePath()
 
@@ -103,9 +106,8 @@ class NextStoneView:
                   'Next', position=(440, 80), font='30px bold sans-serif', fill_style="rgb(0, 0, 0)")
 
         # 石
-        pos = (535, 70)
-        radius = 15
-        draw_stone(self._ctx, pos, radius, self._model.next_stone)
+        center = (535, 70)
+        draw_stone(self._ctx, center, self._model.next_stone)
 
 
 class TimerView:
@@ -158,14 +160,8 @@ class BanView:
                 if color == 0:
                     continue
                 offset = margin + cell_size / 2
-                center_x = column * cell_size + offset
-                center_y = row * cell_size + offset
-                radius = 15
-                self._ctx.beginPath()
-                self._ctx.fillStyle = _STONE_COLORS[color]
-                self._ctx.arc(center_x, center_y, radius, _ANGLE_START, _ANGLE_END)
-                self._ctx.fill()
-                self._ctx.closePath()
+                center = (column * cell_size + offset, row * cell_size + offset)
+                draw_stone(self._ctx, center, color)
 
 
 class GameView:
